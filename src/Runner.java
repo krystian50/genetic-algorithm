@@ -21,92 +21,47 @@ import java.util.logging.Logger;
  */
 public class Runner {
 
-  private static final Logger LOGGER = Logger.getLogger( Runner.class.getName() );
-  private static final String definitionFile = "assets/def_small/10_3_5_3.def";
-  private static final String writeFile = "assets/solutions_small/10_3_5_3.sol";
+
+  public static void run(String definition, String write) {
+      double probability = 0.1;
+      int childrenNumber= 100;
+      int loopTimes = 100;
+      MSRCPSPIO reader = new MSRCPSPIO();
+
+      Schedule schedule2 = reader.readDefinition("assets/def_small/"+definition);
+      Initialise init = new Initialise(schedule2,childrenNumber, probability);
+      // first population
+      List<BaseIndividual> population = init.getFirstPopulation();
+      BaseValidator validator = new CompleteValidator();
+
+      population = init.runAlgorithm(population, loopTimes);
+      BaseIndividual result = init.getBestBaseIndividualSchedule(population);
+
+
+      System.out.println("--------------");
+      System.out.println("data: "+definition);
+      System.out.println("mutation probability: "+probability);
+      System.out.println("number of children: "+childrenNumber);
+      System.out.println("loops: "+loopTimes);
+      System.out.println("valid: "+validator.validate(result.getSchedule()));
+      System.out.println("Error list: "+validator.getErrorMessages());
+      System.out.println("NormalDuration: " +result.getNormalDuration());
+      System.out.println("Duration: " +result.getDuration());
+      try {
+          reader.write(schedule2, "assets/solutions_small/"+write);
+      } catch (IOException e) {
+          System.out.print("Writing to a file failed");
+      }
+  }
 
   public static void main(String[] args) {
+      run("10_3_5_3.def","10_3_5_3.sol");
+      run("10_5_8_5.def","10_5_8_5.sol");
+      run("10_7_10_7.def","10_7_10_7.sol");
+      run("15_3_5_3.def","15_3_5_3.sol");
+      run("15_6_10_6.def","15_6_10_6.sol");
+      run("15_9_12_9.def","15_9_12_9.sol");
 
-    // read definition file into Schedule object
-    MSRCPSPIO reader = new MSRCPSPIO();
-    Schedule schedule = reader.readDefinition(definitionFile);
-    if (null == schedule) {
-      LOGGER.log(Level.WARNING, "Could not read the Definition " + definitionFile);
-    }
-
-    // get array of upper bounds of each task assignment, that does
-    // violate skill constraint
-    int[] upperBounds = schedule.getUpperBounds(schedule.getTasks().length);
-    // create an evaluator
-    BaseEvaluator evaluator = new DurationEvaluator(schedule);
-
-    Task[] tasks = schedule.getTasks();
-    Resource[] resources = schedule.getResources();
-
-    // create arbitrary schedule
-    schedule.assign(tasks[0], resources[0]);
-    schedule.assign(tasks[1], resources[1]);
-    schedule.assign(tasks[2], resources[2]);
-    schedule.assign(tasks[3], resources[0]);
-    schedule.assign(tasks[4], resources[1]);
-    schedule.assign(tasks[5], resources[2]);
-    schedule.assign(tasks[6], resources[0]);
-    schedule.assign(tasks[7], resources[1]);
-    schedule.assign(tasks[8], resources[2]);
-    schedule.assign(tasks[9], resources[0]);
-
-    // create greedy algorithm to set timestamps
-    Greedy greedy = new Greedy(schedule.getSuccesors());
-    // set starts of each task using greedy algorithm
-    greedy.buildTimestamps(schedule);
-
-    // validate schedule, it results in a failure (keep in mind, that
-    // the schedule was created by hand)
-    BaseValidator validator = new CompleteValidator();
-    System.out.println(validator.validate(schedule));
-    System.out.println(validator.getErrorMessages());
-
-    // create schedule randomly, while keeping constraints
-    Random random = new Random(System.currentTimeMillis());
-    List<Resource> capableResources;
-    for (int i = 0; i < tasks.length; ++i) {
-      // get resources capable of performing given task
-      capableResources = schedule.getCapableResources(tasks[i]);
-      // assign the task to random capable resource
-      schedule.assign(tasks[i], capableResources.get((int)(random.nextDouble() * upperBounds[i])));
-    }
-    // set timestamps in greedy manner
-    greedy.buildTimestamps(schedule);
-    // validate schedule, this time it results in a success
-    System.out.println(validator.validate(schedule));
-    System.out.println(validator.getErrorMessages());
-
-    // save to a file
-    // my function
-
-      Schedule schedule2 = reader.readDefinition(definitionFile);
-
-//      Greedy greedy2 = new Greedy(schedule2.getSuccesors());
-//      // set starts of each task using greedy algorithm
-//      greedy2.buildTimestamps(schedule2);
-
-      Initialise init = new Initialise(schedule2,10);
-      List<BaseIndividual> population = init.getFirstPopulation();
-      System.out.println(population.get(1).getSchedule().getTask(2).toString()+"ress "+population.get(1).getSchedule().getTask(2).getResourceId());
-      System.out.println(population.get(2).getSchedule().getTask(2).toString()+"ress "+population.get(1).getSchedule().getTask(2).getResourceId());
-        for( int i = 0; i<population.size(); i++) {
-            System.out.print(" Dist " + population.get(i).getNormalDuration());
-        }
-        System.out.println();
-        population = init.getNextPopulation(population);
-      for( int i = 0; i<population.size(); i++) {
-          System.out.print(" Dist " + population.get(i).getNormalDuration());
-      }
-      try {
-      reader.write(schedule, writeFile);
-    } catch (IOException e) {
-      System.out.print("Writing to a file failed");
-    }
   }
 
 }

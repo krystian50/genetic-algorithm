@@ -92,7 +92,8 @@ public class Task implements Comparable {
     }
     return id + ", duration: " + duration + ", start: " + start
         + ", required skills: " + requiredSkill
-        + ", predecessors: " + p;
+        + ", predecessors: " + p
+        + ", resourceId: " + resourceId;
   }
 
   /**

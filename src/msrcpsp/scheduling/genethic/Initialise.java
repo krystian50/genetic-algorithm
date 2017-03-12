@@ -8,6 +8,7 @@ import msrcpsp.scheduling.Schedule;
 import msrcpsp.scheduling.Task;
 import msrcpsp.scheduling.greedy.Greedy;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -19,9 +20,12 @@ public class Initialise {
 
     private Schedule schedule;
     private int numberOfChildren;
-    public Initialise(Schedule sch, int ch) {
+    private double mutationProb;
+
+    public Initialise(Schedule sch, int ch, double m) {
         schedule = sch;
         numberOfChildren = ch;
+        mutationProb = m;
     }
     public List<BaseIndividual> getFirstPopulation(){
         List<BaseIndividual> result = new LinkedList<>();
@@ -52,11 +56,38 @@ public class Initialise {
         return result;
     }
 
+    public List<BaseIndividual> runAlgorithm(List<BaseIndividual> population, int times) {
+        List<BaseIndividual> result = population;
+        for(int i = 0; i<times; i++) {
+            result = getNextPopulation(result);
+        }
+        return result;
+    }
+
 
     public List<BaseIndividual> getNextPopulation(List<BaseIndividual> population) {
         RouletteSelection roulette = new RouletteSelection();
-        List<BaseIndividual> nextPopulation = roulette.spin(population, numberOfChildren);
+        Crossover crossover = new Crossover();
+        Mutation mutation = new Mutation(mutationProb);
+        List<BaseIndividual> nextPopulation;
+        nextPopulation = roulette.spin(population, numberOfChildren);
+        nextPopulation = crossover.getCrossedNextPopulation(nextPopulation);
 
+        for(BaseIndividual elem : nextPopulation) {
+            elem = mutation.mutateBaseIndividualSchedule(elem);
+        }
+
+
+        for(BaseIndividual elem : nextPopulation) {
+            Greedy greedy = new Greedy(elem.getSchedule().getSuccesors());
+            elem.setSchedule(greedy.buildTimestamps(elem.getSchedule()));
+            elem.setDurationAndCost();
+            elem.setNormalDurationAndCost();
+        }
         return nextPopulation;
+    }
+    public BaseIndividual getBestBaseIndividualSchedule(List<BaseIndividual> schedules) {
+        Collections.sort(schedules);
+        return schedules.get(0);
     }
 }
