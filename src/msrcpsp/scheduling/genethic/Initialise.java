@@ -23,16 +23,16 @@ public class Initialise {
         schedule = sch;
         numberOfChildren = ch;
     }
-    public List<BaseIndividual> getSchedulesList(){
+    public List<BaseIndividual> getFirstPopulation(){
         List<BaseIndividual> result = new LinkedList<>();
         Random random = new Random(System.currentTimeMillis());
         for(int i = 0; i<numberOfChildren;i++) {
-            result.add(getOneSchedule(i, random));
+            result.add(getOneParent(random));
         }
         return result;
     }
 
-    public BaseIndividual getOneSchedule(int index, Random random) {
+    public BaseIndividual getOneParent(Random random) {
         Schedule sch = new Schedule(schedule);
         int[] upperBounds = sch.getUpperBounds(sch.getTasks().length);
         Task[] tasks = sch.getTasks();
@@ -48,12 +48,15 @@ public class Initialise {
         BaseEvaluator evaluator = new DurationEvaluator(sch);
         BaseIndividual result = new BaseIndividual(sch, evaluator);
         result.setDurationAndCost();
+        result.setNormalDurationAndCost();
         return result;
     }
 
 
-    public List<BaseIndividual> nextPopulation(List<BaseIndividual> population) {
+    public List<BaseIndividual> getNextPopulation(List<BaseIndividual> population) {
+        RouletteSelection roulette = new RouletteSelection();
+        List<BaseIndividual> nextPopulation = roulette.spin(population, numberOfChildren);
 
-        return population;
+        return nextPopulation;
     }
 }

@@ -91,10 +91,17 @@ public class Runner {
 //      greedy2.buildTimestamps(schedule2);
 
       Initialise init = new Initialise(schedule2,10);
-      List<BaseIndividual> population = init.getSchedulesList();
+      List<BaseIndividual> population = init.getFirstPopulation();
       System.out.println(population.get(1).getSchedule().getTask(2).toString()+"ress "+population.get(1).getSchedule().getTask(2).getResourceId());
       System.out.println(population.get(2).getSchedule().getTask(2).toString()+"ress "+population.get(1).getSchedule().getTask(2).getResourceId());
-
+        for( int i = 0; i<population.size(); i++) {
+            System.out.print(" Dist " + population.get(i).getNormalDuration());
+        }
+        System.out.println();
+        population = init.getNextPopulation(population);
+      for( int i = 0; i<population.size(); i++) {
+          System.out.print(" Dist " + population.get(i).getNormalDuration());
+      }
       try {
       reader.write(schedule, writeFile);
     } catch (IOException e) {
