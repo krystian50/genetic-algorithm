@@ -1,6 +1,7 @@
 import msrcpsp.evaluation.BaseEvaluator;
 import msrcpsp.evaluation.DurationEvaluator;
 import msrcpsp.io.MSRCPSPIO;
+import msrcpsp.scheduling.BaseIndividual;
 import msrcpsp.scheduling.Resource;
 import msrcpsp.scheduling.Schedule;
 import msrcpsp.scheduling.Task;
@@ -82,11 +83,17 @@ public class Runner {
 
     // save to a file
     // my function
-      Initialise init = new Initialise(schedule,10);
-      List<Schedule> population = init.getSchedulesList();
-      System.out.println(population.get(1).getTask(2).toString()+"ress "+population.get(1).getTask(2).getResourceId());
-      System.out.println(population.get(2).getTask(2).toString()+"ress "+population.get(1).getTask(2).getResourceId());
-      System.out.println(schedule.getTask(2).toString()+"ress "+population.get(1).getTask(2).getResourceId());
+
+      Schedule schedule2 = reader.readDefinition(definitionFile);
+
+//      Greedy greedy2 = new Greedy(schedule2.getSuccesors());
+//      // set starts of each task using greedy algorithm
+//      greedy2.buildTimestamps(schedule2);
+
+      Initialise init = new Initialise(schedule2,10);
+      List<BaseIndividual> population = init.getSchedulesList();
+      System.out.println(population.get(1).getSchedule().getTask(2).toString()+"ress "+population.get(1).getSchedule().getTask(2).getResourceId());
+      System.out.println(population.get(2).getSchedule().getTask(2).toString()+"ress "+population.get(1).getSchedule().getTask(2).getResourceId());
 
       try {
       reader.write(schedule, writeFile);
