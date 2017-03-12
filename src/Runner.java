@@ -4,6 +4,7 @@ import msrcpsp.io.MSRCPSPIO;
 import msrcpsp.scheduling.Resource;
 import msrcpsp.scheduling.Schedule;
 import msrcpsp.scheduling.Task;
+import msrcpsp.scheduling.genethic.Initialise;
 import msrcpsp.scheduling.greedy.Greedy;
 import msrcpsp.validation.BaseValidator;
 import msrcpsp.validation.CompleteValidator;
@@ -80,7 +81,14 @@ public class Runner {
     System.out.println(validator.getErrorMessages());
 
     // save to a file
-    try {
+    // my function
+      Initialise init = new Initialise(schedule,10);
+      List<Schedule> population = init.getSchedulesList();
+      System.out.println(population.get(1).getTask(2).toString()+"ress "+population.get(1).getTask(2).getResourceId());
+      System.out.println(population.get(2).getTask(2).toString()+"ress "+population.get(1).getTask(2).getResourceId());
+      System.out.println(schedule.getTask(2).toString()+"ress "+population.get(1).getTask(2).getResourceId());
+
+      try {
       reader.write(schedule, writeFile);
     } catch (IOException e) {
       System.out.print("Writing to a file failed");
