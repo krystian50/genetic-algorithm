@@ -7,6 +7,8 @@ import msrcpsp.scheduling.Task;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Created by Krystian on 2017-03-11.
@@ -18,10 +20,21 @@ public class Crossover {
      * @param population - selected population by roulette
      * @return
      */
+
+    private double probability;
+
+    public Crossover(double p) {
+        probability = p;
+    }
+
+
     public List<BaseIndividual> getCrossedNextPopulation(List<BaseIndividual> population) {
         List<BaseIndividual> result = new LinkedList<>();
-        for(int i = 0; i<population.size(); i = i + 2) {
-            BaseIndividual[] children = getNextSiblings(population.get(i), population.get(i+1));
+        Random generator = new Random();
+        for(int i = 0; i<population.size()/2; i++) {
+            int index1 = generator.nextInt(10);
+            int index2 = generator.nextInt(10);
+            BaseIndividual[] children = getNextSiblings(population.get(index1), population.get(index2));
             result.add(children[0]);
             result.add(children[1]);
         }
@@ -30,8 +43,14 @@ public class Crossover {
 
     public BaseIndividual[] getNextSiblings(BaseIndividual parent1, BaseIndividual parent2) {
         BaseIndividual[] result = new BaseIndividual[2];
-        result[0] = getNextChild(parent1, parent2);
-        result[1] = getNextChild(parent2, parent1);
+        double randomNum = ThreadLocalRandom.current().nextDouble(100);
+        if (randomNum <= probability) {
+            result[0] = getNextChild(parent1, parent2);
+            result[1] = getNextChild(parent2, parent1);
+        } else {
+            result[0] = parent1;
+            result[1] = parent2;
+        }
         return result;
     }
 

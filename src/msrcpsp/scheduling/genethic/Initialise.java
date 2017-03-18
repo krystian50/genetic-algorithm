@@ -21,11 +21,13 @@ public class Initialise {
     private Schedule schedule;
     private int numberOfChildren;
     private double mutationProb;
+    private double crossOverProb;
 
-    public Initialise(Schedule sch, int ch, double m) {
+    public Initialise(Schedule sch, int ch, double m, double c) {
         schedule = sch;
         numberOfChildren = ch;
         mutationProb = m;
+        crossOverProb = c;
     }
     public List<BaseIndividual> getFirstPopulation(){
         List<BaseIndividual> result = new LinkedList<>();
@@ -67,7 +69,7 @@ public class Initialise {
 
     public List<BaseIndividual> getNextPopulation(List<BaseIndividual> population) {
         RouletteSelection roulette = new RouletteSelection();
-        Crossover crossover = new Crossover();
+        Crossover crossover = new Crossover(crossOverProb);
         Mutation mutation = new Mutation(mutationProb);
         List<BaseIndividual> nextPopulation;
         nextPopulation = roulette.spin(population, numberOfChildren);

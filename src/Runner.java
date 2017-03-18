@@ -17,13 +17,14 @@ public class Runner {
 
 
   public static void run(String definition, String write, int chill, int loop) {
-      double probability = 0.05;
+      double mutProbability = 0.05;
+      double crossProbability = 70;
       int childrenNumber= chill;
       int loopTimes = loop;
       MSRCPSPIO reader = new MSRCPSPIO();
 
       Schedule schedule2 = reader.readDefinition("assets/def_small/"+definition);
-      Initialise init = new Initialise(schedule2,childrenNumber, probability);
+      Initialise init = new Initialise(schedule2,childrenNumber, mutProbability, crossProbability);
       // first population
       List<BaseIndividual> population = init.getFirstPopulation();
       BaseValidator validator = new CompleteValidator();
@@ -34,7 +35,7 @@ public class Runner {
 
       System.out.println("--------------");
       System.out.println("data: "+definition);
-      System.out.println("mutation probability: "+probability);
+      System.out.println("mutation probability: "+mutProbability);
       System.out.println("number of children: "+childrenNumber);
       System.out.println("loops: "+loopTimes);
       System.out.println("valid: "+validator.validate(result.getSchedule()));
@@ -60,7 +61,7 @@ public class Runner {
             
             int loopTimes = 100;
             Schedule schedule2 = reader.readDefinition("assets/def_small/" + definition);
-            Initialise init = new Initialise(schedule2, childrenNumber, probability);
+            Initialise init = new Initialise(schedule2, childrenNumber, probability, 70);
             // first population
             List<BaseIndividual> population = init.getFirstPopulation();
 
@@ -82,7 +83,7 @@ public class Runner {
         for(int loopTimes = 100; loopTimes<= 1000;loopTimes = loopTimes +100) {
             int childrenNumber = 200;
             Schedule schedule2 = reader.readDefinition("assets/def_small/" + definition);
-            Initialise init = new Initialise(schedule2, childrenNumber, probability);
+            Initialise init = new Initialise(schedule2, childrenNumber, probability, 70);
             // first population
             List<BaseIndividual> population = init.getFirstPopulation();
 
@@ -104,12 +105,12 @@ public class Runner {
 
 
   public static void main(String[] args) throws IOException {
-      run("10_3_5_3.def","10_3_5_3.sol", 300, 100);
-      run("10_5_8_5.def","10_5_8_5.sol", 300, 100);
-      run("10_7_10_7.def","10_7_10_7.sol", 300, 100);
-      run("15_3_5_3.def","15_3_5_3.sol", 300, 100);
-      run("15_6_10_6.def","15_6_10_6.sol", 300, 100);
-      run("15_9_12_9.def","15_9_12_9.sol", 300, 100);
+      run("10_3_5_3.def","10_3_5_3.sol", 100, 100);
+      run("10_5_8_5.def","10_5_8_5.sol", 100, 100);
+      run("10_7_10_7.def","10_7_10_7.sol", 100, 100);
+      run("15_3_5_3.def","15_3_5_3.sol", 100, 100);
+      run("15_6_10_6.def","15_6_10_6.sol", 100, 100);
+      run("15_9_12_9.def","15_9_12_9.sol", 100, 100);
       runForTest("10_3_5_3.def","10_3_5_3.sol");
 
   }
