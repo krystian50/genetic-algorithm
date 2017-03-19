@@ -28,14 +28,14 @@ public class Mutation {
     }
 
     public Task mutateTask(Task task, List<Resource> resources) {
-        double randomNum = ThreadLocalRandom.current().nextDouble(100);
+        Random rng = new Random(System.currentTimeMillis());
         List<Integer> resourcesId = new LinkedList<>();
         for( Resource elem : resources) {
             if (elem.getId() != task.getResourceId()) {
                 resourcesId.add(elem.getId());
             }
         }
-        if(randomNum <= probability) {
+        if(rng.nextDouble() <= probability) {
             if (resourcesId.size() != 0) {
                 int id = ThreadLocalRandom.current().nextInt(0, resourcesId.size());
                 task.setResourceId(resourcesId.get(id));

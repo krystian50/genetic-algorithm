@@ -68,11 +68,12 @@ public class Initialise {
 
 
     public List<BaseIndividual> getNextPopulation(List<BaseIndividual> population) {
-        RouletteSelection roulette = new RouletteSelection();
+//        System.out.println("Best "+getBestBaseIndividualSchedule(population).getDuration());
+        RankSelection roulette = new RankSelection();
         Crossover crossover = new Crossover(crossOverProb);
         Mutation mutation = new Mutation(mutationProb);
         List<BaseIndividual> nextPopulation;
-        nextPopulation = roulette.spin(population, numberOfChildren);
+        nextPopulation = roulette.spin(population);
         nextPopulation = crossover.getCrossedNextPopulation(nextPopulation);
 
         for(BaseIndividual elem : nextPopulation) {
